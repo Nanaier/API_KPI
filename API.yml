@@ -1,0 +1,87 @@
+openapi: '3.0.2'
+info:
+  title: Online Auction API
+  version: '1.0'
+servers:
+  - url: https://api.server.online-auction/v1
+paths:
+   /auctioneer/{auctioneerId}/lots:
+    get:
+      responses:
+        '200':
+          description: Returns all the lots that the auctioneer has created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lot'
+        '400':
+          description: Invalid auctioneerID.
+                
+components:
+  schemas:
+    Lot:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Vase
+        price:
+          type: number
+          format: double
+          example: 350.5
+        isFavourite:
+          type: boolean
+          description: is in Favourite List?
+          example: 1
+        status:
+          type: string
+          description: Lot Status
+          example: sold
+          enum:
+            - placed
+            - active
+            - sold
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: theAuctioneer
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+        phone:
+          type: string
+          example: '12345'
+        userType:
+          type: string
+          description: User Type
+          example: auctioneer
+          enum:
+            - auctioneer
+            - bidder
+        lots:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lot'
+      
+

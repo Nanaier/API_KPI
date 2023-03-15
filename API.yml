@@ -52,7 +52,47 @@ paths:
                     $ref: '#/components/schemas/Lot'
           '400':
             description: Invalid auctioneerID.
-    
+
+# working with specific lot of a specific auctioneer
+   /auctioneer/{auctioneerId}/lots/{lotId}:
+    put:
+      tags:
+        - lot
+      summary: Updates a specific lot of the specific auctioneer.
+      description: Updates a specific lot by Id of the specific auctioneer.
+      operationId: updateAuctioneerLot
+      parameters:
+        - name: auctioneerId
+          in: path
+          description: id of auctioneer whose lot should be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: lotId
+          in: path
+          description: id of lot which should be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lot'
+      responses:
+        '200':
+          description: Successfull operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Lot'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Lot not found
                 
 components:
   schemas:

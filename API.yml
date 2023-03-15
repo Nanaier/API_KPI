@@ -10,6 +10,8 @@ tags:
     description: Operations about lot
   - name: user
     description: Operations about user
+  - name: favorites
+    description: Operations about Favorites
 
 paths:
    /auctioneer/{auctioneerId}/lots:
@@ -121,6 +123,34 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Lot not found
+
+# working with favorites
+   /bidder/{bidderId}/favorites:
+     get:
+      tags:
+        - favorites
+      summary: Returns all the lots that have been added to Favorites of a specific bidder.
+      description: Returns all the lots that have been added to Favorites of a specific bidder.
+      operationId: getBidderFavoritesLots
+      parameters:
+        - name: bidderId
+          in: path
+          description: id of bidder to get favorite lots from
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Returns all the lots that are in bidder's Favorites.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lot'
+        '400':
+          description: Invalid bidderID.
 
                 
 components:

@@ -84,4 +84,4 @@ components:
           items:
             $ref: '#/components/schemas/Lot'
       
-#hello world!
+      

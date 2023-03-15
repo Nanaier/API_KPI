@@ -7,6 +7,17 @@ servers:
 paths:
    /auctioneer/{auctioneerId}/lots:
     get:
+      summary: Returns all the lots that a specific auctioneer has created.
+      description: Returns all the lots that the auctioneer has created.
+      operationId: getAuctioneerLots
+      parameters:
+        - name: auctioneerId
+          in: path
+          description: id of auctioneer to get lots from
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: Returns all the lots that the auctioneer has created.
@@ -18,6 +29,19 @@ paths:
                   $ref: '#/components/schemas/Lot'
         '400':
           description: Invalid auctioneerID.
+    post: 
+      responses:
+        '200':
+          description: Returns all the lots that the auctioneer has created.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lot'
+        '400':
+          description: Invalid auctioneerID.
+    
                 
 components:
   schemas:

@@ -12,6 +12,8 @@ tags:
     description: Operations about user
   - name: favorites
     description: Operations about Favorites
+  - name: balance
+    description: Operations about Balance
 
 paths:
    /auctioneer/{auctioneerId}/lots:
@@ -43,15 +45,24 @@ paths:
     post: 
         tags:
         - lot
+        summary: Create a new lot.
+        description: Creates a new lot for a specified auctioneer.
+        operationId: createAuctioneerLot
+        parameters:
+        - name: auctioneerId
+          in: path
+          description: id of auctioneer to create a lot to
+          required: true
+          schema:
+            type: integer
+            format: int64
         responses:
           '200':
-            description: Returns all the lots that the auctioneer has created.
+            description: Creates a new lot for a specified auctioneer.
             content:
               application/json:
                 schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Lot'
+                  $ref: '#/components/schemas/Lot'
           '400':
             description: Invalid auctioneerID.
 
@@ -151,7 +162,153 @@ paths:
                   $ref: '#/components/schemas/Lot'
         '400':
           description: Invalid bidderID.
+   /bidder/{bidderId}/favorites/{id}:
+    post: 
+      tags:
+        - favorites
+      summary: Add a lot to Favourites.
+      description: Adds a lot to Favourites of a specific bidder.
+      operationId: addBidderFavoritesLots
+      parameters:
+        - name: bidderId
+          in: path
+          description: id of bidder to get favorite lots from
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: id
+          in: path
+          description: id of a lot to add to Favourites
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Adds a lot to Favourites of a specific bidder.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lot'
+        '400':
+          description: Invalid bidderID.
+        '404':
+          description: Lot not found
+    delete:
+      tags:
+        - favorites
+      summary: Removes a lot from Favourites.
+      description: Removes a lot from Favourites of a specific bidder.
+      operationId: removeBidderFavoritesLots
+      parameters:
+        - name: bidderId
+          in: path
+          description: id of bidder to remove favorite lot from
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: id
+          in: path
+          description: id of a lot to remove from Favourites
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Removes a lot from Favourites of a specific bidder.
+        '400':
+          description: Invalid bidderID.
+        '404':
+          description: Lot not found
 
+
+
+# working with balance
+   /bidder/{bidderId}/balance:
+    get:
+      tags:
+        - balance
+      summary: Get bidder balance
+      description: Get a specified account balance by given bidder Id
+      operationId: getBidderBalance
+      parameters:
+        - name: bidderId
+          in: path
+          description: id of bidder to get a balance of
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Balance'
+        '400':
+          description: Invalid resource supplied
+
+   /bidder/{bidderId}/withdraw/{amount}:
+    put:
+      tags:
+        - balance
+      summary: Withdraw money
+      description: Withdraw funds from a specified bidder
+      operationId: withdrawMoney
+      parameters:
+        - name: bidderId
+          in: path
+          description: id of bidder to get a balance of
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: amount
+          in: path
+          required: true
+          schema:
+            type: number
+            format: double
+      responses:
+        '400':
+          description: Invalid resource supplied
+        '404':
+          description: The requested resource cannot be found
+        '500':
+          description: The server encountered an unexpected condition
+
+   /bidder/{bidderId}/replenish/{amount}:
+    put:
+      tags:
+        - balance
+      summary: Replenish money
+      description: replenish money of a specified bidder
+      operationId: replenishMoney
+      parameters:
+        - name: bidderId
+          in: path
+          description: id of bidder to get a balance of
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: amount
+          in: path
+          required: true
+          schema:
+            type: number
+            format: double
+      responses:
+        '400':
+          description: Invalid resource supplied
+        '404':
+          description: The requested resource cannot be found
+        '500':
+          description: The server encountered an unexpected condition
                 
 components:
   schemas:
@@ -217,5 +374,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Lot'
+    Balance: 
+      type: object
+      properties:
+        user:
+          type: object
+          $ref: '#/components/schemas/User'
+        balance:
+          type: number
+          format: double
+          example: 100.5
+        currencyCode:
+          type: string
+      
       
       

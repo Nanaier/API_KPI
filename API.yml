@@ -8,12 +8,21 @@ servers:
 tags:
   - name: lot
     description: Operations about lot
-  - name: user
-    description: Operations about user
+    
+  - name: bids
+    description: Operations about bids
+
+#  - name: user
+#    description: Operations about user
+
   - name: favorites
     description: Operations about Favorites
+
   - name: balance
     description: Operations about Balance
+
+  - name: notifications
+    description: Operations about notifications    
 
 paths:
    /auctioneer/{auctioneerId}/lots:
@@ -162,6 +171,7 @@ paths:
                   $ref: '#/components/schemas/Lot'
         '400':
           description: Invalid bidderID.
+   
    /bidder/{bidderId}/favorites/{id}:
     post: 
       tags:
@@ -223,8 +233,6 @@ paths:
           description: Invalid bidderID.
         '404':
           description: Lot not found
-
-
 
 # working with balance
    /bidder/{bidderId}/balance:
@@ -308,8 +316,74 @@ paths:
         '404':
           description: The requested resource cannot be found
         '500':
-          description: The server encountered an unexpected condition
-                
+          description: The server encountered an unexpected condition     
+
+# working with bids
+   /auctions/{id}/bids:
+    post:
+      tags:
+        - bids
+      summary: Place bid on a lot
+      description: Place a new bid for the specified lot in the auction with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: ID of the auction to place bid
+          required: true
+          type: integer
+        - name: bid
+          in: body
+          description: Details of the bid
+          required: true
+          schema:
+            $ref: "#/components/schemas/Bid"
+      responses:
+        "200":
+          description: Successfully placed bid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bid"
+        "400":
+          description: Bad Request. One or more of the request parameters is invalid.
+        "401":
+          description: Unauthorized. Authentication credentials were missing or incorrect.
+        "404":
+          description: Not Found. The specified resource could not be found.
+        "500":
+          description: Internal Server Error. An error occurred on the server while processing the request.
+
+   /auctions/{id}/last_bid_price:
+    get:
+      tags:
+        - bids
+      summary: Get last bid price of a lot
+      description: Retrieves the price of the last bid for the specified lot in the auction with the given ID
+      parameters:
+        - name: id
+          in: path
+          description: ID of the auction to retrieve last bid price
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: Successfully retrieved last bid price
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  last_bid_price:
+                    type: number
+                    format: double
+                    example: 350.5
+                required:
+                  - last_bid_price
+        "404":
+          description: Not Found. The specified resource could not be found.
+        "500":
+          description: Internal Server Error. An error occurred on the server while processing the request.
+         
 components:
   schemas:
     Lot:

@@ -534,7 +534,7 @@ components:
         lot:
           $ref: "#/components/schemas/Lot"
           description: The lot for which the bid was placed
-        amount:
+        bid_price:
           type: number
           format: double
           example: 350.5

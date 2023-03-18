@@ -12,9 +12,6 @@ tags:
   - name: bids
     description: Operations about bids
 
-#  - name: user
-#    description: Operations about user
-
   - name: favorites
     description: Operations about Favorites
 
@@ -364,7 +361,8 @@ paths:
           in: path
           description: ID of the auction to retrieve last bid price
           required: true
-          type: integer
+          schema:
+            type: integer
       responses:
         "200":
           description: Successfully retrieved last bid price
@@ -383,6 +381,66 @@ paths:
           description: Not Found. The specified resource could not be found.
         "500":
           description: Internal Server Error. An error occurred on the server while processing the request.
+
+# notifications
+   /notification/{id}/lotSold:
+    post:
+      tags:
+        - notifications
+      summary: Notify auctioneer of lot sold
+      description: Notifies the auctioneer that the specified lot in the auction with the given ID has been sold
+      parameters:
+        - name: id
+          in: path
+          description: ID of the auction to notify of lot sold
+          required: true
+          schema:
+            type: integer
+        - name: lot
+          in: body
+          description: Details of the lot
+          required: true
+          schema:
+            $ref: "#/components/schemas/Lot"
+      responses:
+        "200":
+          description: Successfully notified auctioneer of lot sold
+        "404":
+          description: Not Found. The specified resource could not be found.
+        "500":
+          description: Internal Server Error. An error occurred on the server while processing the request.
+
+   /notification/{id}/bidWon:
+      post:    
+        tags:
+          - notifications
+        summary: Notify winning bidder
+        description: Notifies the winning bidder of the specified lot in the auction with the given ID that they have won the lot
+        parameters:
+          - name: id
+            in: path
+            description: ID of the auction to notify winning bidder
+            required: true
+            schema:
+              type: integer
+          - name: bidder
+            in: body
+            description: Details of the winning bidder
+            required: true
+            schema:
+              $ref: "#/components/schemas/User"
+        responses:
+          "200":
+            description: Successfully notified winning bidder
+          "400":
+            description: Bad Request. One or more of the request parameters is invalid.
+          "401":
+            description: Unauthorized. Authentication credentials were missing or incorrect.
+          "404":
+            description: Not Found. The specified resource could not be found.
+          "500":
+            description: Internal Server Error. An error occurred on the server while processing the request.
+
          
 components:
   schemas:
@@ -412,6 +470,7 @@ components:
             - placed
             - active
             - sold
+   
     User:
       type: object
       properties:
@@ -448,6 +507,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Lot'
+    
     Balance: 
       type: object
       properties:
@@ -460,6 +520,7 @@ components:
           example: 100.5
         currencyCode:
           type: string
+    
     Bid:
       type: object
       properties:
